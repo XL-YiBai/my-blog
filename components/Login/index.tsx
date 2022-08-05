@@ -21,8 +21,10 @@ const Login = (props: IProps) => {
     onClose && onClose();
   };
 
+  // 点击获取验证码的回调
   const handleGetVerifyCode = () => {
     // setIsShowVerifyCode(true);
+    // 判断是否输入手机号
     if (!form.phone) {
       message.warning('请输入手机号');
       return;
@@ -42,7 +44,21 @@ const Login = (props: IProps) => {
       });
   };
 
-  const handleLogin = () => {};
+  //点击登录按钮的回调
+  const handleLogin = () => {
+    request
+      .post('api/user/login', {
+        ...form,
+      })
+      .then((res: any) => {
+        if (res.code === 0) {
+          // 登录成功
+          onClose && onClose(); // 关闭登录框
+        } else {
+          message.error(res?.msg || '未知错误');
+        }
+      });
+  };
 
   const handleOAuthGithub = () => {};
 

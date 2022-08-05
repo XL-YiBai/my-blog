@@ -10,12 +10,13 @@ import { ironOptions } from 'config/index';
 // 通过withIronSessionApiRoute把路由函数sendVerifyCode包裹之后，就在req中存在session属性了
 export default withIronSessionApiRoute(sendVerifyCode, ironOptions);
 
+// 路由处理函数
 async function sendVerifyCode(req: NextApiRequest, res: NextApiResponse) {
   /**
    * 容联云模版短信业务接口详细配置信息：http://doc.yuntongxun.com/pe/5a533de33b8496dd00dce07c
    */
   const session: ISession = req.session;
-  const { to = '', templateId = '1' } = req.body;
+  const { to = '', templateId = '1' } = req.body; // to就是向哪个手机号发短信，templateId是短信模版
   const AppId = '8a216da881ad975401825e8c6b272a7c';
   const AccountId = '8a216da881ad975401825e8c6a442a75';
   const AuthToken = 'cdce6ce5bba34311917fb69ccdf02654';
@@ -29,6 +30,7 @@ async function sendVerifyCode(req: NextApiRequest, res: NextApiResponse) {
   const expireMinute = 5; // 过期时间五分钟
   const Authorization = encode(`${AccountId}:${NowDate}`);
 
+  // 容联云第三方接口地址
   const url = `https://app.cloopen.com:8883/2013-12-26/Accounts/${AccountId}/SMS/TemplateSMS?sig=${SigParameter}`;
 
   console.log(to, templateId);
@@ -36,11 +38,12 @@ async function sendVerifyCode(req: NextApiRequest, res: NextApiResponse) {
   console.log(SigParameter);
   console.log(Authorization);
 
+  // 向第三方发送请求，让第三方向用户发短信
   const response = await request.post(
     url,
     {
-      to,
-      templateId,
+      to, // to就是向哪个手机号发短信
+      templateId, // templateId是短信模版
       appId: AppId,
       datas: [verifyCode, expireMinute],
     },
