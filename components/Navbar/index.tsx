@@ -57,16 +57,8 @@ const Navbar: NextPage = () => {
     );
   };
 
-  const test = () => {
-    console.log(store.user.userInfo);
-
-    store.user.setUserInfo({ nickname: '夏磊' });
-    console.log(store.user.userInfo);
-  };
-
   return (
     <div className={styles.navbar}>
-      <button onClick={test}>{store.user.userInfo.nickname}</button>
       <section className={styles.logoArea}>BLOG-C</section>
       <section className={styles.linkArea}>
         {navs?.map((nav) => (
