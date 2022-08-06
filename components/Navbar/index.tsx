@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import { NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Button, Avatar, Dropdown, Menu } from 'antd';
 import { LoginOutlined, HomeOutlined } from '@ant-design/icons';
+import request from 'service/fetch';
 import { useStore } from 'store/index';
 import Login from 'components/Login';
 import styles from './index.module.scss';
@@ -27,15 +29,27 @@ const Navbar: NextPage = () => {
     setIsShowLogin(false);
   };
 
+  // 点击个人主页时的回调
+  const handleGoToPersonalPage = () => {};
+
+  // 点击退出登录时的回调
+  const handleLogout = () => {
+    request.post('/api/user/logout').then((res: any) => {
+      if (res?.code === 0) {
+        store.user.setUserInfo({}); // 删除全局store用户信息
+      }
+    });
+  };
+
   // 该函数用于渲染antd组件Dropdown鼠标经过时的展示的内容
   const renderDropDownMenu = () => {
     return (
       <Menu>
-        <Menu.Item>
+        <Menu.Item onClick={handleGoToPersonalPage}>
           <HomeOutlined />
           &nbsp;个人主页
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item onClick={handleLogout}>
           <LoginOutlined />
           &nbsp;退出登录
         </Menu.Item>
@@ -43,8 +57,16 @@ const Navbar: NextPage = () => {
     );
   };
 
+  const test = () => {
+    console.log(store.user.userInfo);
+
+    store.user.setUserInfo({ nickname: '夏磊' });
+    console.log(store.user.userInfo);
+  };
+
   return (
     <div className={styles.navbar}>
+      <button onClick={test}>{store.user.userInfo.nickname}</button>
       <section className={styles.logoArea}>BLOG-C</section>
       <section className={styles.linkArea}>
         {navs?.map((nav) => (
@@ -76,4 +98,4 @@ const Navbar: NextPage = () => {
   );
 };
 
-export default Navbar;
+export default observer(Navbar);

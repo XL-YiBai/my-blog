@@ -27,3 +27,22 @@ export const setCookie = (
     path,
   });
 };
+
+// 清空cookie
+export const clearCookie = (cookies: any) => {
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  const path = '/';
+
+  cookies.set('userId', '', {
+    expires,
+    path,
+  });
+  cookies.set('nickname', '', {
+    expires,
+    path,
+  });
+  cookies.set('avatar', '', {
+    expires,
+    path,
+  });
+};

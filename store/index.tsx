@@ -7,7 +7,8 @@ interface IProps {
   children: ReactElement;
 }
 
-enableStaticRendering(true); // 如果是SSR项目就把这个设为true
+// 如果是node环境(SSR)就把这个设为true，如果是浏览器环境就设为false
+enableStaticRendering(!process.browser); 
 
 const StoreContext = createContext({});
 

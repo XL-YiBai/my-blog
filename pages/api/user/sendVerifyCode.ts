@@ -1,3 +1,4 @@
+// 发送验证码的接口
 import { NextApiRequest, NextApiResponse } from 'next';
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { format } from 'date-fns';

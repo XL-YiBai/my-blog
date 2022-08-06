@@ -1,5 +1,6 @@
 import { ChangeEvent, useState } from 'react';
 import { message } from 'antd';
+import { observer } from 'mobx-react-lite';
 import request from 'service/fetch';
 import { useStore } from 'store/index';
 import CountDown from 'components/CountDown';
@@ -66,6 +67,7 @@ const Login = (props: IProps) => {
 
   const handleOAuthGithub = () => {};
 
+  // 表单改变的回调
   const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm({
@@ -74,6 +76,7 @@ const Login = (props: IProps) => {
     });
   };
 
+  // 获取验证码倒计时结束时
   const handleCountDownEnd = () => {
     setIsShowVerifyCode(false);
   };
@@ -131,4 +134,4 @@ const Login = (props: IProps) => {
   ) : null;
 };
 
-export default Login;
+export default observer(Login);
