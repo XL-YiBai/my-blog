@@ -27,6 +27,7 @@ const Navbar: NextPage = () => {
     setIsShowLogin(false);
   };
 
+  // 该函数用于渲染antd组件Dropdown鼠标经过时的展示的内容
   const renderDropDownMenu = () => {
     return (
       <Menu>

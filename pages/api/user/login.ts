@@ -1,9 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { withIronSessionApiRoute } from 'iron-session/next';
+import { Cookie } from 'next-cookie';
 import { ironOptions } from 'config/index';
+import { ISession } from 'pages/api/index';
+import { setCookie } from 'utils/index';
 import { prepareConnection } from 'db/index';
 import { User, UserAuth } from 'db/entity/index';
-import { ISession } from '..';
 
 // 引入之前db/index导出的连接函数，调用即可获取数据库对象db，在db上可以调用db.getRepository(映射对象)，
 // 就可以连接到数据库，通过对象的形式操作数据库，，每一个操作方法都会对应一个sql语句，返回查询的Promise。比如find就是查出所有数据，如下。
@@ -14,6 +16,7 @@ export default withIronSessionApiRoute(login, ironOptions);
 // 路由处理函数
 async function login(req: NextApiRequest, res: NextApiResponse) {
   const session: ISession = req.session;
+  const cookies = Cookie.fromApiRoute(req, res); // 拿到cookie操作对象
   const { phone = '', verify = '', identity_type = 'phone' } = req.body;
   const db = await prepareConnection(); // 连接数据库
   const userAuthRepo = db.getRepository(UserAuth); // 获取和user_auths表的映射对象
@@ -41,8 +44,9 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
       session.userId = id;
       session.nickname = nickname;
       session.avatar = avatar;
-
       await session.save();
+      // 设置cookie，用于登录持久化
+      setCookie(cookies, { id, nickname, avatar });
 
       res.status(200).json({
         code: 0,
@@ -77,6 +81,8 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
       session.nickname = nickname;
       session.avatar = avatar;
       await session.save();
+      // 设置cookie，用于登录持久化
+      setCookie(cookies, { id, nickname, avatar });
 
       res.status(200).json({
         code: 0,
