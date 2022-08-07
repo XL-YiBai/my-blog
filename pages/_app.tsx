@@ -10,14 +10,25 @@ interface IProps {
 }
 
 function MyApp({ initialValue, Component, pageProps }: IProps) {
+  // 根据要渲染的路由组件Component上的layout属性是否为null，来动态决定要不要展示Layout(也就是页头页脚)
+  const renderLayout = () => {
+    if ((Component as any).layout === null) {
+      return <Component {...pageProps} />
+    } else {
+      return (
+        // 把路由通过子组件传递给Layout插入中间内容区域，这样路由改变时只有中间内容区域变化
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      )
+    }
+  }
+
   return (
     // 使用Provider让所有子组件都拿到mobx中的store
     // 把initialValue传入组件，在StoreProvider组件中用initialValue初始化store
     <StoreProvider initialValue={initialValue}>
-      {/* 把路由通过子组件传递给Layout插入中间内容区域，这样路由改变时只有中间内容区域变化 */}
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      {renderLayout()}
     </StoreProvider>
   );
 }
