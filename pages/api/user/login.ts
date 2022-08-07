@@ -8,7 +8,7 @@ import { setCookie } from 'utils/index';
 import { prepareConnection } from 'db/index';
 import { User, UserAuth } from 'db/entity/index';
 
-// 引入之前db/index导出的连接函数，调用即可获取数据库对象db，在db上可以调用db.getRepository(映射对象)，
+// 引入之前db/index导出的连接函数prepareConnection，调用即可获取数据库对象db，在db上可以调用db.getRepository(映射对象)，
 // 就可以连接到数据库，通过对象的形式操作数据库，，每一个操作方法都会对应一个sql语句，返回查询的Promise。比如find就是查出所有数据，如下。
 
 // 通过withIronSessionApiRoute把路由函数包裹之后，就在req中存在session属性了
