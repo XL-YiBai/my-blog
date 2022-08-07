@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Button, Avatar, Dropdown, Menu } from 'antd';
+import { Button, Avatar, Dropdown, Menu, message } from 'antd';
 import { LoginOutlined, HomeOutlined } from '@ant-design/icons';
 import request from 'service/fetch';
 import { useStore } from 'store/index';
@@ -14,10 +14,18 @@ import { navs } from './config';
 const Navbar: NextPage = () => {
   const store = useStore();
   const { userId, avatar } = store.user.userInfo;
-  const { pathname } = useRouter();
+  const { pathname, push } = useRouter();
   const [isShowLogin, setIsShowLogin] = useState(false);
 
-  const handleGoToEditorPage = () => {};
+  // 点击写文章按钮的回调
+  const handleGoToEditorPage = () => {
+    // 判断是否登录
+    if (userId) {
+      push('/editor/new');
+    } else {
+      message.warning('请先登录');
+    }
+  };
 
   // 点击登陆按钮的回调
   const handleLogin = () => {
@@ -30,7 +38,9 @@ const Navbar: NextPage = () => {
   };
 
   // 点击个人主页时的回调
-  const handleGoToPersonalPage = () => {};
+  const handleGoToPersonalPage = () => {
+    push(`/user/${userId}`);
+  };
 
   // 点击退出登录时的回调
   const handleLogout = () => {
