@@ -1,7 +1,8 @@
 export type IUserInfo = { // 用户信息类型
   userId?: number | null;
   nickname?: string;
-  avatar?: string
+  avatar?: string;
+  id?: number;
 }
 
 export interface IUserStore {

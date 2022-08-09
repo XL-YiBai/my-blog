@@ -8,6 +8,10 @@ interface IProps {
   articles: IArticle[];
 }
 
+/**
+ * 这里暴露出的getServerSideProps函数返回对象中的props，将传递给下面的Home组件中的props用作SSR渲染的数据
+ * 这个props在网页查看源代码的时候会展现出来，因此不能传入敏感数据。props中的字段需要转JSON，否则报错。
+ */
 export async function getServerSideProps() {
   const db = await prepareConnection();
   const articles = await db.getRepository(Article).find({

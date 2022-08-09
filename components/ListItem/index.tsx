@@ -3,6 +3,7 @@ import { formatDistanceToNow } from 'date-fns'; // 可以转化成距今多久
 import { IArticle } from 'pages/api/index';
 import { Avatar } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
+import { markdownToTxt } from 'markdown-to-txt';
 import styles from './index.module.scss';
 
 interface IProps {
@@ -24,10 +25,10 @@ const ListItem = (props: IProps) => {
             </span>
           </div>
           <h4 className={styles.title}>{article?.title}</h4>
-          <p className={styles.content}>{article?.content}</p>
+          <p className={styles.content}>{markdownToTxt(article?.content)}</p>
           <div className={styles.statics}>
             <EyeOutlined />
-            <span>{article?.views}</span>
+            <span className={styles.item}>{article?.views}</span>
           </div>
         </div>
         <Avatar src={user.avatar} size={48} />
