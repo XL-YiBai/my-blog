@@ -13,8 +13,8 @@ interface IProps {
   article: IArticle;
 }
 
-export async function getServerSideProps({ params }) {
-  const articleId = params?.id;
+export async function getServerSideProps({ params }: any) {
+  const articleId = params?.id; // 这里在参数ctx解构出params可以拿到动态路由的参数
   const db = await prepareConnection();
   const articleRepo = db.getRepository(Article);
   const article = await articleRepo.findOne({
