@@ -48,8 +48,7 @@ const ArticleDetail = (props: IProps) => {
     user: { nickname, avatar, id },
   } = article;
   const [inputVal, setInputVal] = useState(''); // 评论的输入框内容
-
-  console.log('article', article);
+  const [comments, setComments] = useState(article?.comments || []);
 
   // 点击发表评论的回调
   const handleComment = () => {
@@ -61,6 +60,22 @@ const ArticleDetail = (props: IProps) => {
       .then((res: any) => {
         if (res?.code === 0) {
           message.success('发表成功');
+
+          // 因为使用SSR渲染，初始数据来源于服务端查询数据库，这里我们发表评论之后不能及时更新页面，
+          // 所以我们把comment维护在一个useState里面，发表成功之后手动新的评论添加进去
+          const newComments = [
+            {
+              id: Math.random(),
+              creat_time: new Date(),
+              update_time: new Date(),
+              content: inputVal,
+              user: {
+                avatar: loginUserInfo?.avatar,
+                nickname: loginUserInfo?.nickname,
+              },
+            },
+          ].concat(comments);
+          setComments(newComments);
           setInputVal('');
         } else {
           message.error('发表失败');
@@ -113,7 +128,25 @@ const ArticleDetail = (props: IProps) => {
           )}
           <Divider />
           {/* 该文章的评论列表 */}
-          <div className={styles.display}></div>
+          <div className={styles.display}>
+            {comments?.map((comment: any) => (
+              <div className={styles.wrapper} key={comment.id}>
+                <Avatar src={comment.user.avatar} size={40} />
+                <div className={styles.info}>
+                  <div className={styles.name}>
+                    <div>{comment?.user?.nickname}</div>
+                    <div className={styles.date}>
+                      {format(
+                        new Date(comment.update_time),
+                        'yyyy-MM-dd hh:mm:ss'
+                      )}
+                    </div>
+                  </div>
+                  <div className={styles.content}>{comment?.content}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
