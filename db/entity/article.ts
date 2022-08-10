@@ -1,5 +1,6 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
 import { User } from './user'
+import { Comment } from './comment'
 // PrimaryGeneratedColumn 主键的列，，Column一般的列
 
 // 装饰器，name就是表名
@@ -29,4 +30,7 @@ export class Article extends BaseEntity {
   @ManyToOne(() => User)
   @JoinColumn({name: 'user_id'}) // 外键键名
   user!:User
+
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments!: Comment[]
 }

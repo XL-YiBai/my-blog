@@ -31,3 +31,22 @@
     width: 100%;
   }
 }
+
+.divider {
+  background-color: aliceblue;
+  height: 20px;
+}
+
+.comment {
+  .enter {
+    display: flex;
+    align-items: center;
+    .content {
+      width: 100%;
+      margin-left: 20px;
+      button {
+        margin-top: 20px;
+      }
+    }
+  }
+}

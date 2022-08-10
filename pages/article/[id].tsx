@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import Link from 'next/link';
-import { Avatar } from 'antd';
+import { Avatar, Button, Divider, Input, message } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { useStore } from 'store/index';
 import Markdown from 'markdown-to-jsx';
@@ -8,6 +9,7 @@ import { prepareConnection } from 'db/index';
 import { Article } from 'db/entity';
 import { IArticle } from 'pages/api';
 import styles from './index.module.scss';
+import request from 'service/fetch';
 
 interface IProps {
   article: IArticle;
@@ -21,7 +23,8 @@ export async function getServerSideProps({ params }: any) {
     where: {
       id: articleId, // 查找条件是id等于动态路由的articleId
     },
-    relations: ['user'], // 查询文章时，把外键关联的用户信息一并返回
+    // 查询文章时，把外键关联的该文章用户信息、该文章评论、该评论的用户信息 一并返回
+    relations: ['user', 'comments', 'comments.user'],
   });
 
   if (article) {
@@ -44,6 +47,27 @@ const ArticleDetail = (props: IProps) => {
   const {
     user: { nickname, avatar, id },
   } = article;
+  const [inputVal, setInputVal] = useState(''); // 评论的输入框内容
+
+  console.log('article', article);
+
+  // 点击发表评论的回调
+  const handleComment = () => {
+    request
+      .post('/api/comment/publish', {
+        articleId: article?.id,
+        content: inputVal,
+      })
+      .then((res: any) => {
+        if (res?.code === 0) {
+          message.success('发表成功');
+          setInputVal('');
+        } else {
+          message.error('发表失败');
+        }
+      });
+  };
+
   return (
     <div>
       <div className="content-layout">
@@ -65,6 +89,32 @@ const ArticleDetail = (props: IProps) => {
           </div>
         </div>
         <Markdown className={styles.markdown}>{article?.content}</Markdown>
+      </div>
+      <div className={styles.divider}></div>
+      <div className="content-layout">
+        <div className={styles.comment}>
+          <h3>评论</h3>
+          {/* 登录状态下才展示发表评论的区域 */}
+          {loginUserInfo?.userId && (
+            <div className={styles.enter}>
+              <Avatar src={avatar} size={40} />
+              <div className={styles.content}>
+                <Input.TextArea
+                  placeholder="请输入评论..."
+                  rows={4}
+                  value={inputVal}
+                  onChange={(event) => setInputVal(event?.target?.value)}
+                />
+                <Button type="primary" onClick={handleComment}>
+                  发表评论
+                </Button>
+              </div>
+            </div>
+          )}
+          <Divider />
+          {/* 该文章的评论列表 */}
+          <div className={styles.display}></div>
+        </div>
       </div>
     </div>
   );

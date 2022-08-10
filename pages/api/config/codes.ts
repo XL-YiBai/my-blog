@@ -1,6 +1,9 @@
 // 该文件用来统一定义一些code字段和msg的映射关系
+
+// 用户信息接口相关的错误
 export const EXCEPTION_USER = {};
 
+// 文章接口相关的错误
 export const EXCEPTION_ARTICLE = {
   PUBLISH_FAILED: {
     code: 2001,
@@ -15,3 +18,12 @@ export const EXCEPTION_ARTICLE = {
     msg: '未找到文章'
   }
 };
+
+
+// 评论接口相关的错误
+export const EXCEPTION_COMMENT = {
+  PUBLISH_FAILED: {
+    code: 4001,
+    msg: '发表失败',
+  },
+}
