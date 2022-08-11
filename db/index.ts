@@ -1,7 +1,7 @@
 // 数据库入口文件，，导出一个connection函数
 import 'reflect-metadata';
 import { Connection, createConnection, getConnection } from 'typeorm';
-import { User, UserAuth, Article, Comment } from './entity/index';
+import { User, UserAuth, Article, Comment, Tag } from './entity/index';
 
 const host = process.env.DATABASE_HOST;
 const port = Number(process.env.DATABASE_PORT);
@@ -29,7 +29,7 @@ export const prepareConnection = () => {
         username, // 用户名，root
         password, // 数据库密码
         database, // 连接哪个数据库
-        entities: [User, UserAuth, Article, Comment], // 对象 关于数据库的映射关系
+        entities: [User, UserAuth, Article, Comment, Tag], // 对象 关于数据库的映射关系
         synchronize: false,
         logging: true, // 日志
       });
