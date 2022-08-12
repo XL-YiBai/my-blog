@@ -2,8 +2,8 @@ import '@uiw/react-md-editor/markdown-editor.css';
 import '@uiw/react-markdown-preview/markdown.css';
 import dynamic from 'next/dynamic';
 import {observer} from 'mobx-react-lite';
-import { ChangeEvent, useState } from 'react';
-import { Input, Button, message } from 'antd';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { Input, Button, message, Select } from 'antd';
 import { useRouter } from 'next/router';
 import {useStore} from 'store/index';
 import request from 'service/fetch';
@@ -17,6 +17,16 @@ const NewEditor = () => {
   const {push} = useRouter()
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [tagIds, setTagIds] = useState([]);
+  const [allTags, setAllTags] = useState([]);
+
+  useEffect(() => {
+    request.get('/api/tag/get').then((res: any) => {
+      if (res.code === 0) {
+        setAllTags(res?.data?.allTags || [])
+      }
+    })
+  }, [])
 
   // 点击发布的回调
   const handlePublish = () => {
@@ -26,7 +36,8 @@ const NewEditor = () => {
     }
     request.post('/api/article/publish', {
       title,
-      content
+      content,
+      tagIds
     }).then((res: any) => {
       if (res?.code === 0) {
         // 发布完之后跳转到个人中心页面
@@ -48,6 +59,11 @@ const NewEditor = () => {
     setContent(content)
   }
 
+  // 选择文章标签的onChange回调
+  const handleSelectTag = (value: []) => {
+    setTagIds(value)
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.operation}>
@@ -57,6 +73,17 @@ const NewEditor = () => {
           value={title}
           onChange={handleTitleChange}
         />
+        <Select 
+          className={styles.tag}
+          mode="multiple"
+          allowClear
+          placeholder="请选择标签"
+          onChange={handleSelectTag}
+        >{
+          allTags.map((tag: any) => (
+            <Select.Option key={tag?.id} value={tag?.id}>{tag.title}</Select.Option>
+          ))
+        }</Select>
         <Button
           className={styles.button}
           type="primary"

@@ -2,11 +2,11 @@ import '@uiw/react-md-editor/markdown-editor.css';
 import '@uiw/react-markdown-preview/markdown.css';
 import dynamic from 'next/dynamic';
 import {observer} from 'mobx-react-lite';
-import { ChangeEvent, useState } from 'react';
-import { Input, Button, message } from 'antd';
+import { ChangeEvent, useState, useEffect } from 'react';
+import { Input, Button, message, Select } from 'antd';
 import { useRouter } from 'next/router';
 import { prepareConnection } from 'db/index';
-import { Article } from 'db/entity';
+import { Article, Tag } from 'db/entity';
 import request from 'service/fetch';
 import styles from './index.module.scss';
 import { IArticle } from 'pages/api';
@@ -23,7 +23,7 @@ export async function getServerSideProps({ params }: any) {
     where: {
       id: articleId, // 查找条件是id等于动态路由的articleId
     },
-    relations: ['user'], // 查询文章时，把外键关联的用户信息一并返回
+    relations: ['user'], // 查询文章时，把外键关联的用户信息，文章标签一并返回
   });
 
   return {
@@ -40,6 +40,16 @@ const ModifyEditor = ({ article }: IProps) => {
   const articleId = Number(query?.id); // 拿到当前路由参数文章id
   const [title, setTitle] = useState(article?.title || '');
   const [content, setContent] = useState(article?.content || '');
+  const [tagIds, setTagIds] = useState([]);
+  const [allTags, setAllTags] = useState([]);
+
+  useEffect(() => {
+    request.get('/api/tag/get').then((res: any) => {
+      if (res.code === 0) {
+        setAllTags(res?.data?.allTags || [])
+      }
+    })
+  }, [])
 
   // 点击发布的回调
   const handlePublish = () => {
@@ -50,7 +60,8 @@ const ModifyEditor = ({ article }: IProps) => {
     request.post('/api/article/update', {
       id: articleId,
       title,
-      content
+      content,
+      tagIds
     }).then((res: any) => {
       if (res?.code === 0) {
         // 更新完之后跳转到文章详情页
@@ -72,6 +83,11 @@ const ModifyEditor = ({ article }: IProps) => {
     setContent(content)
   }
 
+  // 选择文章标签的onChange回调
+  const handleSelectTag = (value: []) => {
+    setTagIds(value)
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.operation}>
@@ -81,6 +97,17 @@ const ModifyEditor = ({ article }: IProps) => {
           value={title}
           onChange={handleTitleChange}
         />
+        <Select 
+          className={styles.tag}
+          mode="multiple"
+          allowClear
+          placeholder="请选择标签"
+          onChange={handleSelectTag}
+        >{
+          allTags.map((tag: any) => (
+            <Select.Option key={tag?.id} value={tag?.id}>{tag.title}</Select.Option>
+          ))
+        }</Select>
         <Button
           className={styles.button}
           type="primary"

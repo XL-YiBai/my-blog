@@ -1,6 +1,7 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, ManyToMany } from 'typeorm';
 import { User } from './user'
 import { Comment } from './comment'
+import { Tag } from './tags';
 // PrimaryGeneratedColumn 主键的列，，Column一般的列
 
 // 装饰器，name就是表名
@@ -31,6 +32,12 @@ export class Article extends BaseEntity {
   @JoinColumn({name: 'user_id'}) // 外键键名
   user!:User
 
+  @ManyToMany(() => Tag, (tag) => tag?.articles, {
+    cascade: true
+  })
+  tags!: Tag[]; // 该文章关联的标签数组 
+
+
   @OneToMany(() => Comment, (comment) => comment.article)
-  comments!: Comment[]
+  comments!: Comment[] // 该文章的评论数组
 }

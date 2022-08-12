@@ -35,9 +35,8 @@ export class Tag extends BaseEntity {
   })
   users!:User[]
 
-  @ManyToMany(() => Article, { // 标签和文章是多对多的，一个文章可以添加标签，一个标签可以被多个文章使用
-    cascade: true
-  })
+  // 标签和文章是多对多的，一个文章可以添加标签，一个标签可以被多个文章使用
+  @ManyToMany(() => Article, (article) => article.tags)
   @JoinTable({
     name: 'articles_tags_rel',  // 关联表名称
     joinColumn: {
