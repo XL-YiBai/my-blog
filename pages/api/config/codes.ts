@@ -1,7 +1,12 @@
 // 该文件用来统一定义一些code字段和msg的映射关系
 
 // 用户信息接口相关的错误
-export const EXCEPTION_USER = {};
+export const EXCEPTION_USER = {
+  NOT_LOGIN: {
+    code: 1001,
+    msg: '未登录',
+  },
+};
 
 // 文章接口相关的错误
 export const EXCEPTION_ARTICLE = {
@@ -15,10 +20,17 @@ export const EXCEPTION_ARTICLE = {
   },
   NOT_FOUND: {
     code: 2003,
-    msg: '未找到文章'
-  }
+    msg: '未找到文章',
+  },
 };
 
+// 标签接口相关的错误
+export const EXCEPTION_TAG = {
+  FOLLOW_FAILED: {
+    code: 3001,
+    msg: '关注/取关失败',
+  },
+};
 
 // 评论接口相关的错误
 export const EXCEPTION_COMMENT = {
@@ -26,4 +38,4 @@ export const EXCEPTION_COMMENT = {
     code: 4001,
     msg: '发表失败',
   },
-}
+};
