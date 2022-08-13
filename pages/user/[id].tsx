@@ -1,21 +1,19 @@
 /* eslint-disable @next/next/link-passhref */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { observer } from 'mobx-react-lite';
-import { Button, message, Tabs, Avatar, Divider } from 'antd';
+import { Button, Avatar, Divider } from 'antd';
 import {
   CodeOutlined,
   FireOutlined,
   FundViewOutlined,
 } from '@ant-design/icons';
-import { useStore } from 'store/index';
-import request from 'service/fetch';
 import ListItem from 'components/ListItem';
 import { prepareConnection } from 'db/index';
 import { User, Article } from 'db/entity';
 import styles from './index.module.scss';
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params }: { params: any }) {
   const userId = params?.id;
   const db = await prepareConnection();
   const user = await db.getRepository(User).findOne({
