@@ -13,6 +13,7 @@ import { IArticle } from 'pages/api';
 
 interface IProps {
   article: IArticle
+  tags: []
 }
 
 export async function getServerSideProps({ params }: any) {
@@ -23,24 +24,28 @@ export async function getServerSideProps({ params }: any) {
     where: {
       id: articleId, // 查找条件是id等于动态路由的articleId
     },
-    relations: ['user'], // 查询文章时，把外键关联的用户信息，文章标签一并返回
+    relations: ['user', 'tags'], // 查询文章时，把外键关联的用户信息，文章标签一并返回
   });
+  const tags = article?.tags.map((tag => {
+    return tag.id
+  }))
 
   return {
     props: {
       article: JSON.parse(JSON.stringify(article)),
+      tags: JSON.parse(JSON.stringify(tags))
     },
   };
 }
 
 const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
 
-const ModifyEditor = ({ article }: IProps) => {
+const ModifyEditor = ({ article, tags }: IProps) => {
   const {push, query} = useRouter()
   const articleId = Number(query?.id); // 拿到当前路由参数文章id
   const [title, setTitle] = useState(article?.title || '');
   const [content, setContent] = useState(article?.content || '');
-  const [tagIds, setTagIds] = useState([]);
+  const [tagIds, setTagIds] = useState(tags);
   const [allTags, setAllTags] = useState([]);
 
   useEffect(() => {
@@ -49,7 +54,7 @@ const ModifyEditor = ({ article }: IProps) => {
         setAllTags(res?.data?.allTags || [])
       }
     })
-  }, [])
+  }, [article])
 
   // 点击发布的回调
   const handlePublish = () => {
@@ -103,6 +108,7 @@ const ModifyEditor = ({ article }: IProps) => {
           allowClear
           placeholder="请选择标签"
           onChange={handleSelectTag}
+          defaultValue={tagIds}
         >{
           allTags.map((tag: any) => (
             <Select.Option key={tag?.id} value={tag?.id}>{tag.title}</Select.Option>
