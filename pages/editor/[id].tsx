@@ -6,7 +6,7 @@ import { ChangeEvent, useState, useEffect } from 'react';
 import { Input, Button, message, Select } from 'antd';
 import { useRouter } from 'next/router';
 import { prepareConnection } from 'db/index';
-import { Article, Tag } from 'db/entity';
+import { Article } from 'db/entity';
 import request from 'service/fetch';
 import styles from './index.module.scss';
 import { IArticle } from 'pages/api';
