@@ -68,7 +68,12 @@ const Login = (props: IProps) => {
 
   // 点击github登录的回调
   const handleOAuthGithub = () => {
-    const githubClientid = '83bdfbabf1b8ab7d015b';
+    let githubClientid;
+    if (process.env.NODE_ENV == 'development') {
+      githubClientid = '32f3c6810fdf2b604bf3';
+    } else if (process.env.NODE_ENV == 'production') {
+      githubClientid = '83bdfbabf1b8ab7d015b';
+    }
     const redirectUri = 'http://localhost:3000/api/oauth/redirect';
     window.open(
       `https://github.com/login/oauth/authorize?client_id=${githubClientid}&redirect_uri=${redirectUri}`

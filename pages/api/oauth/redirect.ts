@@ -18,8 +18,16 @@ async function redirect(req: NextApiRequest, res: NextApiResponse) {
   // http://localhost:3000/api/oauth/redirect?code=xxxxx
   const { code } = req.query || {};
 
-  const githubClientID = '83bdfbabf1b8ab7d015b';
-  const githubSecrect = '9d0fb3061da4a759a22a11a931cbec4342243328';
+  let githubClientID;
+  let githubSecrect;
+  if (process.env.NODE_ENV == 'development') {
+    githubClientID = '32f3c6810fdf2b604bf3';
+    githubSecrect = 'fd7ab75a81dbc70c7c928f5cc30f46533bac288c'
+  } else if (process.env.NODE_ENV == 'production') {
+    githubClientID = '83bdfbabf1b8ab7d015b';
+    githubSecrect = 'c5c808b524c279d0d8f27b559f519aa97b930ac0'
+  }
+
   const url = `https://github.com/login/oauth/access_token?client_id=${githubClientID}&client_secret=${githubSecrect}&code=${code}`;
 
   const result = await request.post(

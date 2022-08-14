@@ -6,3 +6,8 @@ export const ironOptions = {
     secure: process.env.NODE_ENV === 'production', // 在生产环境设置true，前端不能用js修改cookie
   },
 };
+
+export const githubOptions = {
+  githubClientID: process.env.GITHUB_CLIENT_ID as string,
+  githubSecrect: process.env.GITHUB_SECRECT as string
+}
