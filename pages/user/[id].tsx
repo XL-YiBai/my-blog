@@ -13,7 +13,20 @@ import { prepareConnection } from 'db/index';
 import { User, Article } from 'db/entity';
 import styles from './index.module.scss';
 
-export async function getServerSideProps({ params }: { params: any }) {
+export async function getStaticPaths() {
+  // user/[id]
+  const db = await prepareConnection();
+  const users = await db.getRepository(User).find();
+  const userIds = users?.map((user) => ({ params: { id: String(user?.id) } }));
+
+  // [{params: 1}, {params: 2}, {params: 3}]
+  return {
+    paths: userIds,
+    fallback: 'blocking',
+  };
+}
+
+export async function getStaticProps({ params }: { params: any }) {
   const userId = params?.id;
   const db = await prepareConnection();
   const user = await db.getRepository(User).findOne({
@@ -24,7 +37,7 @@ export async function getServerSideProps({ params }: { params: any }) {
   const articles = await db.getRepository(Article).find({
     where: {
       user: {
-        id: userId,
+        id: Number(userId),
       },
     },
     relations: ['user', 'tags'],
@@ -37,6 +50,31 @@ export async function getServerSideProps({ params }: { params: any }) {
     },
   };
 }
+
+// export async function getServerSideProps({ params }: { params: any }) {
+//   const userId = params?.id;
+//   const db = await prepareConnection();
+//   const user = await db.getRepository(User).findOne({
+//     where: {
+//       id: Number(userId),
+//     },
+//   });
+//   const articles = await db.getRepository(Article).find({
+//     where: {
+//       user: {
+//         id: userId,
+//       },
+//     },
+//     relations: ['user', 'tags'],
+//   });
+
+//   return {
+//     props: {
+//       userInfo: JSON.parse(JSON.stringify(user)),
+//       articles: JSON.parse(JSON.stringify(articles)),
+//     },
+//   };
+// }
 
 const UserDetail = (props: any) => {
   const { userInfo = {}, articles = [] } = props;
