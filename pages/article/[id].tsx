@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import { Avatar, Button, Divider, Input, message } from 'antd';
+import { Avatar, Input, Button, message, Divider } from 'antd';
 import { observer } from 'mobx-react-lite';
 import { useStore } from 'store/index';
-import Markdown from 'markdown-to-jsx';
+import MarkDown from 'markdown-to-jsx';
 import { format } from 'date-fns';
 import { prepareConnection } from 'db/index';
 import { Article } from 'db/entity';
@@ -66,7 +66,7 @@ const ArticleDetail = (props: IProps) => {
           const newComments = [
             {
               id: Math.random(),
-              creat_time: new Date(),
+              create_time: new Date(),
               update_time: new Date(),
               content: inputVal,
               user: {
@@ -74,7 +74,7 @@ const ArticleDetail = (props: IProps) => {
                 nickname: loginUserInfo?.nickname,
               },
             },
-          ].concat(comments);
+          ].concat([...(comments as any)]);
           setComments(newComments);
           setInputVal('');
         } else {
@@ -93,9 +93,9 @@ const ArticleDetail = (props: IProps) => {
             <div className={styles.name}>{nickname}</div>
             <div className={styles.date}>
               <div>
-                {format(new Date(article.update_time), 'yyyy-MM-dd hh:mm:ss')}
+                {format(new Date(article?.update_time), 'yyyy-MM-dd hh:mm:ss')}
               </div>
-              <div>阅读 {article.views}</div>
+              <div>阅读 {article?.views}</div>
               {/* 如果登录用户的id和文章作者的id一样，说明是本人的文章，展示编辑按钮 */}
               {Number(loginUserInfo?.userId) === Number(id) && (
                 <Link href={`/editor/${article?.id}`}>编辑</Link>
@@ -103,7 +103,7 @@ const ArticleDetail = (props: IProps) => {
             </div>
           </div>
         </div>
-        <Markdown className={styles.markdown}>{article?.content}</Markdown>
+        <MarkDown className={styles.markdown}>{article?.content}</MarkDown>
       </div>
       <div className={styles.divider}></div>
       <div className="content-layout">
@@ -115,7 +115,7 @@ const ArticleDetail = (props: IProps) => {
               <Avatar src={avatar} size={40} />
               <div className={styles.content}>
                 <Input.TextArea
-                  placeholder="请输入评论..."
+                  placeholder="请输入评论"
                   rows={4}
                   value={inputVal}
                   onChange={(event) => setInputVal(event?.target?.value)}
@@ -130,14 +130,14 @@ const ArticleDetail = (props: IProps) => {
           {/* 该文章的评论列表 */}
           <div className={styles.display}>
             {comments?.map((comment: any) => (
-              <div className={styles.wrapper} key={comment.id}>
-                <Avatar src={comment.user.avatar} size={40} />
+              <div className={styles.wrapper} key={comment?.id}>
+                <Avatar src={comment?.user?.avatar} size={40} />
                 <div className={styles.info}>
                   <div className={styles.name}>
                     <div>{comment?.user?.nickname}</div>
                     <div className={styles.date}>
                       {format(
-                        new Date(comment.update_time),
+                        new Date(comment?.update_time),
                         'yyyy-MM-dd hh:mm:ss'
                       )}
                     </div>
