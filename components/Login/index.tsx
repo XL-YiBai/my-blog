@@ -5,6 +5,7 @@ import request from 'service/fetch';
 import { useStore } from 'store/index';
 import CountDown from 'components/CountDown';
 import styles from './index.module.scss';
+import { GithubOutlined } from '@ant-design/icons';
 
 interface IProps {
   isShow: boolean;
@@ -65,7 +66,14 @@ const Login = (props: IProps) => {
       });
   };
 
-  const handleOAuthGithub = () => {};
+  // 点击github登录的回调
+  const handleOAuthGithub = () => {
+    const githubClientid = '83bdfbabf1b8ab7d015b';
+    const redirectUri = 'http://localhost:3000/api/oauth/redirect';
+    window.open(
+      `https://github.com/login/oauth/authorize?client_id=${githubClientid}&redirect_uri=${redirectUri}`
+    );
+  };
 
   // 表单改变的回调
   const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -117,7 +125,8 @@ const Login = (props: IProps) => {
           登录
         </div>
         <div className={styles.otherLogin} onClick={handleOAuthGithub}>
-          使用 Github 登录
+          <GithubOutlined style={{ color: 'black' }} />
+          &nbsp; 使用 Github 登录
         </div>
         <div className={styles.loginPrivacy}>
           注册登录即表示同意

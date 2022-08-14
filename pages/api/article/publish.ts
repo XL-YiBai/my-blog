@@ -19,6 +19,8 @@ async function publish(req: NextApiRequest, res: NextApiResponse) {
   const articleRepo = db.getRepository(Article);
   const tagRepo = db.getRepository(Tag);
 
+  console.log('session的值', session);
+
   // 根据session保存的当前用户的id查找出user表中对应的信息
   const user = await userRepo.findOne({
     id: session.userId,
