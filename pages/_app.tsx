@@ -1,5 +1,6 @@
 import '../styles/globals.css';
 import { StoreProvider } from 'store/index';
+import ErrorBoundary from 'components/ErrorBundary';
 import Layout from 'components/layout';
 import { NextPage } from 'next';
 
@@ -27,9 +28,11 @@ function MyApp({ initialValue, Component, pageProps }: IProps) {
   return (
     // 使用Provider让所有子组件都拿到mobx中的store
     // 把initialValue传入组件，在StoreProvider组件中用initialValue初始化store
-    <StoreProvider initialValue={initialValue}>
-      {renderLayout()}
-    </StoreProvider>
+    <ErrorBoundary>
+      <StoreProvider initialValue={initialValue}>
+        {renderLayout()}
+      </StoreProvider>
+    </ErrorBoundary>
   );
 }
 
